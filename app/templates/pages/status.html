@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block title %}현황 - 재고조사 시스템{% endblock %}
+{% block content %}
+<h1 class="page-title">재고 현황</h1>
+
+<div class="panel">
+  <div class="search-bar">
+    <input id="search-input" type="text" placeholder="품목명/품번/바코드로 검색">
+    <select id="filter-category"><option value="">전체 구분</option></select>
+    <select id="filter-location"><option value="">전체 위치</option></select>
+  </div>
+  <div class="table-scroll">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>품목명</th>
+        <th>품번</th>
+        <th>구분</th>
+        <th>단위</th>
+        <th>위치</th>
+        <th>규격약식</th>
+        <th>현재고</th>
+        <th>최근 조사수량(수동)</th>
+        <th>최근 조사일자</th>
+        <th>바코드 추적</th>
+      </tr>
+    </thead>
+    <tbody id="status-table-body"></tbody>
+  </table>
+  </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script src="/static/js/status.js?v={{ asset_version }}"></script>
+{% endblock %}

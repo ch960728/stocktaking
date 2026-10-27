@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}재고조사 시스템{% endblock %}</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css?v={{ asset_version }}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <header class="app-header">
+    <div class="app-header__brand">재고조사 시스템</div>
+  </header>
+  <div class="app-shell">
+    <nav class="app-sidebar">
+      {% include "components/nav.html" %}
+    </nav>
+    <main class="app-body">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+  <footer class="app-footer">
+    <span>&copy; 2026 재고조사 시스템</span>
+  </footer>
+
+  {% include "components/toast.html" %}
+
+  <script src="/static/js/common.js?v={{ asset_version }}"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

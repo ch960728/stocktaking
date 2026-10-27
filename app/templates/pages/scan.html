@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block title %}센서 재고 등록 - 재고조사 시스템{% endblock %}
+{% block content %}
+<h1 class="page-title">센서 재고 등록</h1>
+
+<div class="panel panel-highlight">
+  <div class="panel-title">센서 바코드 스캔</div>
+  <div class="search-bar" id="scan-mode-tabs">
+    <button type="button" class="btn btn-primary" data-mode="add">입고 (등록)</button>
+    <button type="button" class="btn btn-secondary" data-mode="remove">출고 (제거)</button>
+  </div>
+  <form id="scan-form" class="form-grid">
+    <div class="form-field">
+      <label for="scan-input">바코드</label>
+      <input id="scan-input" type="text" autocomplete="off" autofocus placeholder="스캐너로 스캔하거나 입력 후 Enter">
+    </div>
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" id="camera-toggle-btn">카메라로 스캔</button>
+    </div>
+  </form>
+  <div id="camera-reader" class="camera-reader" hidden></div>
+  <div class="form-actions">
+    <button type="button" class="btn btn-primary" id="camera-capture-btn" hidden>스캔하기</button>
+  </div>
+  <p id="scan-result-label" class="autocomplete-item__meta"></p>
+</div>
+
+<div class="panel">
+  <div class="panel-title">처리 기록 (이 화면을 연 뒤)</div>
+  <div class="table-scroll">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>시간</th>
+        <th>구분</th>
+        <th>품목명</th>
+        <th>바코드</th>
+        <th>남은 바코드 수</th>
+      </tr>
+    </thead>
+    <tbody id="scan-log-body">
+      <tr class="empty-row"><td colspan="5">아직 처리한 기록이 없습니다</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="/static/js/scan.js?v={{ asset_version }}"></script>
+{% endblock %}

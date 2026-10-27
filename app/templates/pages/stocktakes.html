@@ -1,0 +1,87 @@
+{% extends "layout.html" %}
+{% block title %}재고 등록 - 재고조사 시스템{% endblock %}
+{% block content %}
+<h1 class="page-title">재고 등록</h1>
+
+<div class="panel panel-highlight">
+  <div class="panel-title">재고조사 기록 추가</div>
+  <form id="stocktake-form" class="form-grid">
+    <div class="form-field">
+      <label for="filter-category">구분</label>
+      <select id="filter-category"><option value="">전체 구분</option></select>
+    </div>
+    <div class="form-field">
+      <label for="filter-location">위치</label>
+      <select id="filter-location"><option value="">전체 위치</option></select>
+    </div>
+    <div class="form-field">
+      <label for="item-search-input">품목 *</label>
+      <input id="item-search-input" type="text" placeholder="클릭하여 목록 보기 또는 검색" autocomplete="off" required>
+      <div id="item-search-autocomplete" class="autocomplete-list"></div>
+    </div>
+    <div class="form-field">
+      <label for="quantity-input" id="quantity-label">수량 *</label>
+      <input id="quantity-input" type="number" step="1" required>
+    </div>
+    <div class="form-field">
+      <label for="survey-date-input">조사일자 *</label>
+      <input id="survey-date-input" type="date" required>
+    </div>
+    <div class="form-field">
+      <label for="note-input">비고</label>
+      <input id="note-input" type="text" maxlength="500">
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" id="submit-btn" disabled>추가</button>
+    </div>
+  </form>
+  <p id="selected-item-label" class="autocomplete-item__meta"></p>
+  <div id="stock-breakdown" class="stock-breakdown" hidden>
+    <div class="stock-breakdown__row">
+      <span>바코드 수량</span>
+      <strong id="breakdown-barcode">0</strong>
+    </div>
+    <div class="stock-breakdown__row">
+      <span>바코드 없는 수량</span>
+      <strong id="breakdown-manual">0</strong>
+    </div>
+    <div class="stock-breakdown__row stock-breakdown__total">
+      <span>총 현재고</span>
+      <strong id="breakdown-total">0</strong>
+    </div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-title">재고조사 기록 목록</div>
+  <div class="search-bar">
+    <input id="search-input" type="text" placeholder="품목명/품번/바코드로 검색">
+    <select id="list-filter-category"><option value="">전체 구분</option></select>
+    <input id="date-from-input" type="date">
+    <input id="date-to-input" type="date">
+  </div>
+  <div class="table-scroll">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>품목명</th>
+        <th>품번</th>
+        <th>규격</th>
+        <th>구분</th>
+        <th>단위</th>
+        <th>위치</th>
+        <th>수량</th>
+        <th>조사일자</th>
+        <th>비고</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="stocktake-table-body"></tbody>
+  </table>
+  </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script src="/static/js/autocomplete.js?v={{ asset_version }}"></script>
+<script src="/static/js/stocktakes.js?v={{ asset_version }}"></script>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends "layout.html" %}
+{% block title %}품목 등록 - 재고조사 시스템{% endblock %}
+{% block content %}
+<h1 class="page-title">품목 등록</h1>
+
+<div class="panel panel-highlight">
+  <div class="panel-title">품목 추가</div>
+  <form id="item-form" class="form-grid">
+    <div class="form-section-label">필수 입력</div>
+    <div class="form-field">
+      <label for="item-name-input">품목명 <span class="required-mark">*</span></label>
+      <input id="item-name-input" name="item_name" required maxlength="200" autocomplete="off">
+      <div id="item-name-autocomplete" class="autocomplete-list"></div>
+    </div>
+    <div class="form-field">
+      <label for="category-select">구분 <span class="required-mark">*</span></label>
+      <select id="category-select" required></select>
+    </div>
+    <div class="form-field">
+      <label for="unit-select">단위 <span class="required-mark">*</span></label>
+      <select id="unit-select" required></select>
+    </div>
+    <div class="form-section-label">선택 입력</div>
+    <div class="form-field">
+      <label for="location-select">위치</label>
+      <select id="location-select">
+        <option value="">선택 안함</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label for="size-abbr-select">규격약식</label>
+      <select id="size-abbr-select">
+        <option value="">선택 안함</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label for="size-width-input">규격상세 - 폭</label>
+      <input id="size-width-input" type="number" step="0.01">
+    </div>
+    <div class="form-field">
+      <label for="size-length-input">규격상세 - 길이</label>
+      <input id="size-length-input" type="number" step="0.01">
+    </div>
+    <div class="form-field">
+      <label for="size-height-input">규격상세 - 높이</label>
+      <input id="size-height-input" type="number" step="0.01">
+    </div>
+    <div class="form-field">
+      <label for="item-no-input">품번</label>
+      <input id="item-no-input" name="item_no" maxlength="100">
+    </div>
+    <div class="form-field">
+      <label for="barcode-input">바코드</label>
+      <input id="barcode-input" name="barcode" maxlength="100">
+    </div>
+    <div class="form-field">
+      <label for="barcode-prefix-input">바코드구분</label>
+      <input id="barcode-prefix-input" name="barcode_prefix" maxlength="100" placeholder="예: si, so, sj">
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">추가</button>
+    </div>
+  </form>
+</div>
+
+<div class="panel">
+  <div class="panel-title">품목 목록 <span id="item-count-info" class="badge"></span></div>
+  <div class="search-bar">
+    <input id="search-input" type="text" placeholder="품목명/품번/바코드/바코드구분으로 검색">
+    <select id="filter-category"><option value="">전체 구분</option></select>
+    <select id="filter-location"><option value="">전체 위치</option></select>
+  </div>
+  <div class="table-scroll">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>번호</th>
+        <th>품목명</th>
+        <th>품번</th>
+        <th>바코드</th>
+        <th>바코드구분</th>
+        <th>구분</th>
+        <th>단위</th>
+        <th>위치</th>
+        <th>규격약식</th>
+        <th>규격상세(폭x길이x높이)</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="item-table-body"></tbody>
+  </table>
+  </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script src="/static/js/autocomplete.js?v={{ asset_version }}"></script>
+<script src="/static/js/items.js?v={{ asset_version }}"></script>
+{% endblock %}
