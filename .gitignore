@@ -6,3 +6,8 @@ venv/
 *.egg-info/
 certs/
 .claude/settings.local.json
+
+# graphify: keep only the files Claude reads (graph.json, GRAPH_REPORT.md); the rest is local/regenerable
+graphify-out/*
+!graphify-out/graph.json
+!graphify-out/GRAPH_REPORT.md
