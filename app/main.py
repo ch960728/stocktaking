@@ -71,6 +71,9 @@ app = FastAPI(
         },
     ],
     lifespan=lifespan,
+    docs_url=None,       # Swagger UI (/docs) 끔
+    redoc_url=None,      # ReDoc (/redoc) 끔
+    openapi_url=None,    # /openapi.json까지 끔 (이걸 끄면 위 둘도 못 씀)
 )
 
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
