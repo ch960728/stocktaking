@@ -25,6 +25,8 @@ Read these before making non-trivial changes:
 
 **Record every change in [guide/HISTORY.md](guide/HISTORY.md).** When you finish a change to code, templates, or docs, append one line at the end of that file: `- YYYY-MM-DD: <what changed and why>`, using the absolute date. Do not add history entries to `guide/PLAN.md`.
 
+**Date-stamp every code change in the source, so it can be traced back to HISTORY.md.** Put one comment line directly above the block you added or modified, in the form `YYYY-MM-DD: <short reason>`, using the same date as the matching HISTORY.md entry (so `grep` on the date finds both). Use the file's own comment syntax: `# ...` (Python), `// ...` (JS), `/* ... */` (CSS), `{# ... #}` or `<!-- ... -->` (Jinja2/HTML). One comment per changed block, not per line; don't stamp pure formatting changes, and don't delete older stamps when editing nearby code (they are the trail).
+
 ## Commands
 
 ```
@@ -60,7 +62,7 @@ Browser → Jinja2 Templates → Vanilla JS (fetch) → FastAPI Router → Maria
 ```
 app/
 ├── api/            # common_codes.py, items.py, stocktakes.py (also serves GET /api/stocktakes/status), sensor_barcodes.py (POST /api/sensor-barcodes/scan), pages.py (renders the 5 HTML pages)
-├── core/           # config.py (pydantic-settings, reads .env), database.py (engine/session/Base), templates.py (shared Jinja2Templates instance)
+├── core/           # config.py (pydantic-settings, reads .env), database.py (engine/session/Base), templates.py (shared Jinja2Templates instance), logging_config.py (rotating file log -> logs/app.log, gitignored)
 ├── models/         # mixins.py (AuditMixin: created_by/created_at/updated_by/updated_at/is_active), common_code.py, item.py, stocktake.py, sensor_barcode.py
 ├── schemas/        # Pydantic request/response models, one file per domain
 ├── crud/           # DB query functions — one module per domain, filters are optional kwargs (not forked functions)

@@ -29,3 +29,5 @@
 - 2026-10-27: graphify로 코드/문서 지식 그래프를 생성(`graphify-out/`). Claude가 코드 수정 전 참조하는 `graph.json`/`GRAPH_REPORT.md`만 git에 포함하고 나머지(`graph.html`, 캐시, 로컬 경로 파일 등)는 `.gitignore`로 제외. CLAUDE.md에 그래프 참조 규칙과 히스토리 기록 규칙(이 파일)을 추가하고, 기존 PLAN.md의 히스토리 섹션을 이 파일로 분리.
 - 2026-10-27: `docker-compose.yml`과 `app/core/config.py`에 하드코딩돼 있던 기본 DB 비밀번호(`rootpass`/`stocktaking`)를 제거. 이제 `.env`의 `DB_PASSWORD`/`DB_ROOT_PASSWORD`가 필수이며(compose는 `:?`로 미설정 시 에러, config는 기본값 없음), `.env.example`은 `change-me` 플레이스홀더로 교체. 이미 만들어진 MariaDB 볼륨의 비밀번호는 바뀌지 않으므로, 기존 DB를 쓰는 환경은 `.env`에 기존 비밀번호를 그대로 넣거나 `ALTER USER`로 변경해야 한다.
 - 2026-10-27: `example/`(원본 엑셀 데이터)를 `.gitignore`에 추가하고 git 추적에서 제거. 파일은 로컬에만 남고 저장소에는 더 이상 올라가지 않는다. 이미 푸시된 과거 커밋에는 파일이 남아 있다.
+- 2026-10-27: 서버 로그 파일 기록 추가. `app/core/logging_config.py::setup_logging()`이 `logs/app.log`(5MB 로테이션, 백업 5개)에 앱 로그와 uvicorn 접속/에러 로그를 남기고 `app/main.py`에서 호출한다. `logs/`는 `.gitignore`에 추가. 경로는 프로젝트 루트 기준 절대경로라 실행 위치와 무관.
+- 2026-10-27: 코드 수정 시 수정한 블록 바로 위에 `YYYY-MM-DD: 짧은 이유` 주석을 남기는 규칙을 CLAUDE.md에 추가(HISTORY.md의 같은 날짜 항목과 날짜로 추적). `app/main.py`의 `setup_logging()` 호출에 첫 적용.

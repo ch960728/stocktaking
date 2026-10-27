@@ -5,18 +5,22 @@ from fastapi.staticfiles import StaticFiles
 
 from app.api import common_codes, items, pages, sensor_barcodes, stocktakes
 from app.core.database import Base, SessionLocal, engine
+from app.core.logging_config import setup_logging
 from app.crud.common_code import seed_groups
 import app.models  # noqa: F401  (registers models on Base.metadata)
+
+# 2026-10-27: 서버 로그를 logs/app.log 파일로 기록
+setup_logging()
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
-    db = SessionLocal()
+    db = SessionLocal()# ① 테이블이 없으면 만든다
     try:
-        seed_groups(db)
+        seed_groups(db) # ③ 공통코드 그룹 4개를 넣는다
     finally:
-        db.close()
+        db.close() # ④ 성공하든 실패하든 세션을 닫는다
     yield
 
 
@@ -76,6 +80,8 @@ app = FastAPI(
     openapi_url=None,    # /openapi.json까지 끔 (이걸 끄면 위 둘도 못 씀)
 )
 
+# 브라우저가 /static/... 주소로 요청하는 파일(CSS, JS, 이미지 등)을 서버가 꺼내 주는 폴더
+# 단, HTML은 서버가 app/templates로 만들어 응답하고, 그 안의 CSS/JS 주소(/static/...)는 브라우저가 app/static에 따로 요청합니다.
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 app.include_router(pages.router, include_in_schema=False)
