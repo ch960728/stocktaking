@@ -8,11 +8,22 @@ A small internal web app that replaces an Excel-based stocktaking (재고조사)
 
 Read these before making non-trivial changes:
 - [guide/HANDOVER.md](guide/HANDOVER.md) — onboarding map for a new person/session: tech stack, project structure, pointers to everything below
-- [guide/PLAN.md](guide/PLAN.md) — requirements, key decisions, implementation status/history, how to run the app locally
+- [guide/PLAN.md](guide/PLAN.md) — requirements, key decisions, implementation status, how to run the app locally
+- [guide/HISTORY.md](guide/HISTORY.md) — dated change log (what was changed and why); append new entries here, not in PLAN.md
 - [guide/SCHEMA_DESIGN.md](guide/SCHEMA_DESIGN.md) — DB schema reference
 - [guide/DEVELOPMENT_GUIDELINES.md](guide/DEVELOPMENT_GUIDELINES.md) — the full coding/style rules (also loaded automatically via the `guidelines` skill whenever backend/frontend code here is touched)
 
-`example/ORG_updated_fixed.xlsx` is the original Excel-based inventory data this app replaces (4 sheets: `0_공통설정`, `1_품목등록`, `2_입출고입력`, `3_현재고현황`). Its text is valid UTF-8 — apparent mojibake when inspecting it from a shell is just this Windows terminal's console codepage misrendering UTF-8 output; don't re-diagnose it as file corruption. It has already been imported once (see [guide/PLAN.md](guide/PLAN.md) history) via a one-off script (not kept in the repo) using `openpyxl`-incompatible raw XML parsing, since `openpyxl` fails on this file's `styles.xml`. One real data quality issue found during that import: many `1_품목등록`/`3_현재고현황` rows have a plain numeric value (not a location name) in the 위치 column — cross-checked against `2_입출고입력`'s 날짜 column, these are almost certainly leftover date-serial values from a copy/paste error in the original sheet, not real locations, so they were imported with `location_id = NULL` rather than fabricated.
+`example/ORG_updated_fixed.xlsx` is the original Excel-based inventory data this app replaces (4 sheets: `0_공통설정`, `1_품목등록`, `2_입출고입력`, `3_현재고현황`). Its text is valid UTF-8 — apparent mojibake when inspecting it from a shell is just this Windows terminal's console codepage misrendering UTF-8 output; don't re-diagnose it as file corruption. It has already been imported once (see [guide/HISTORY.md](guide/HISTORY.md)) via a one-off script (not kept in the repo) using `openpyxl`-incompatible raw XML parsing, since `openpyxl` fails on this file's `styles.xml`. One real data quality issue found during that import: many `1_품목등록`/`3_현재고현황` rows have a plain numeric value (not a location name) in the 위치 column — cross-checked against `2_입출고입력`'s 날짜 column, these are almost certainly leftover date-serial values from a copy/paste error in the original sheet, not real locations, so they were imported with `location_id = NULL` rather than fabricated.
+
+## Working in this codebase
+
+**Use the knowledge graph before editing code.** `graphify-out/` (built by the graphify skill, `/graphify .`) maps this repo's files, functions, and communities.
+- Before writing or modifying code, read `graphify-out/GRAPH_REPORT.md` for the community map, then run `graphify query "<question>"` (or `graphify path "<A>" "<B>"` / `graphify explain "<node>"`) to find the files and functions involved. Open the source files only after the graph has narrowed the search.
+- If `graphify-out/graph.json` does not exist, build it with `/graphify .` first.
+- After a session that changed code, refresh the graph with `/graphify . --update`.
+- The graph can be incomplete (for example, it skips `.xlsx` files and may drop some edges). When a graph answer conflicts with the source, trust the source and say so.
+
+**Record every change in [guide/HISTORY.md](guide/HISTORY.md).** When you finish a change to code, templates, or docs, append one line at the end of that file: `- YYYY-MM-DD: <what changed and why>`, using the absolute date. Do not add history entries to `guide/PLAN.md`.
 
 ## Commands
 
@@ -38,7 +49,7 @@ On startup, `app/main.py` calls `Base.metadata.create_all` (no migrations/Alembi
 
 **Every `/static/css/*.css` and `/static/js/*.js` reference in the templates is suffixed `?v={{ asset_version }}`** (`app/core/templates.py` sets this Jinja global to the server's start timestamp). This exists because a real device (a phone that had visited before) kept rendering a stale cached `style.css` after an edit — the HTML was current but the CSS wasn't, so new layout rules silently didn't apply. **Restarting the server is what busts the cache** for every client, including ones that never reload otherwise; editing a static file without restarting won't be picked up by a browser that already cached it under the old `?v=`.
 
-**`create_all` only creates missing tables — it never alters an existing one.** This DB already holds real imported data (see below), so adding a column to an existing model (e.g. the `item_no`/`barcode`/`barcode_prefix` additions in [guide/PLAN.md](guide/PLAN.md) history) requires a manual `ALTER TABLE` against the running MariaDB before restarting the app, not just an edit to the model file.
+**`create_all` only creates missing tables — it never alters an existing one.** This DB already holds real imported data (see below), so adding a column to an existing model (e.g. the `item_no`/`barcode`/`barcode_prefix` additions in [guide/HISTORY.md](guide/HISTORY.md)) requires a manual `ALTER TABLE` against the running MariaDB before restarting the app, not just an edit to the model file.
 
 ## Architecture
 
