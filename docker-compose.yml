@@ -3,10 +3,10 @@ services:
     image: mariadb:11
     restart: unless-stopped
     environment:
-      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpass}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?DB_ROOT_PASSWORD를 .env에 설정하세요}
       MARIADB_DATABASE: ${DB_NAME:-stocktaking}
       MARIADB_USER: ${DB_USER:-stocktaking}
-      MARIADB_PASSWORD: ${DB_PASSWORD:-stocktaking}
+      MARIADB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD를 .env에 설정하세요}
     ports:
       - "${DB_PORT:-3306}:3306"
     volumes:

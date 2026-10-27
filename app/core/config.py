@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     db_port: int = 3306
     db_name: str = "stocktaking"
     db_user: str = "stocktaking"
-    db_password: str = "stocktaking"
+    db_password: str
 
     default_user: str = "admin"
 

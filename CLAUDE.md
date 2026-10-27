@@ -28,7 +28,7 @@ Read these before making non-trivial changes:
 ## Commands
 
 ```
-docker compose up -d                        # start local MariaDB (first time: cp .env.example .env)
+docker compose up -d                        # start local MariaDB (first time: cp .env.example .env, then change the DB_PASSWORD / DB_ROOT_PASSWORD placeholders — no password defaults exist in code or compose, so it fails without them)
 python -m venv .venv && .venv/Scripts/pip install -r requirements.txt   # (Windows; use .venv/bin on macOS/Linux)
 .venv/Scripts/python scripts/generate_dev_cert.py   # first time, and again whenever the LAN IP changes
 .venv/Scripts/python -m uvicorn app.main:app --reload --port 8010 --ssl-keyfile certs/dev-key.pem --ssl-certfile certs/dev-cert.pem

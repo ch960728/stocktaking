@@ -34,7 +34,7 @@
 
 ```
 docker compose up -d               # MariaDB 기동
-cp .env.example .env               # 최초 1회 (이미 되어있으면 생략)
+cp .env.example .env               # 최초 1회 (이미 되어있으면 생략) — 복사 후 DB_PASSWORD/DB_ROOT_PASSWORD를 반드시 바꿀 것 (코드/compose에 기본 비밀번호가 없어 미설정 시 기동 실패)
 .venv 생성 후 pip install -r requirements.txt
 python scripts/generate_dev_cert.py   # 최초 1회 + LAN IP가 바뀔 때마다 재실행
 uvicorn app.main:app --reload --port 8010 --ssl-keyfile certs/dev-key.pem --ssl-certfile certs/dev-cert.pem
