@@ -1,27 +1,21 @@
 # 인수인계 자료
 
-이 프로젝트를 처음 맡게 된 사람을 위한 개요 문서. 세부 내용은 중복 없이 다른 문서로 링크만 하고, 여기서는 "전체 그림"만 잡는다.
-
-## 한 줄 요약
-
-기존에 엑셀로 관리하던 재고조사(재고 입출고/현황 파악) 업무를 대체하는 사내 전용 웹 앱. 로그인 없는 단일 사용자용 도구이며, 사용자 1인(현업 담당자)이 PC/휴대폰 브라우저로 접속해 쓴다.
-
 ## 기술 스택
 
-| 영역 | 선택 | 비고 |
-|---|---|---|
-| 백엔드 | Python 3 + FastAPI | REST API 서버 |
-| ORM | SQLAlchemy 2.0 | `app/models/` |
-| 검증 | Pydantic v2 + pydantic-settings | `app/schemas/`, `.env` 설정 |
-| DB | MariaDB | 로컬은 Docker Compose로 기동 |
-| DB 드라이버 | PyMySQL | |
-| 템플릿 | Jinja2 (서버 렌더링) | `app/templates/` |
-| 프론트엔드 | 프레임워크 없는 Vanilla JS + CSS | `app/static/js`, `app/static/css` — React/Vue 등 전혀 없음 |
-| 외부 라이브러리(CDN) | `html5-qrcode@2.3.8`, Pretendard/Inter 웹폰트 | 둘 다 빌드 없이 `<script>`/`<link>` 태그로 직접 로드 |
-| TLS | `cryptography` 패키지로 자체 서명 인증서 직접 생성 | `scripts/generate_dev_cert.py` |
-| 빌드/번들러 | 없음 | 프론트는 정적 파일을 그대로 서빙 |
-| 테스트/린트 | 없음 | 저장소에 구성되어 있지 않음 (`pytest`/`ruff` 등 가정 금지) |
-| 마이그레이션 | 없음 (Alembic 미사용) | `Base.metadata.create_all`이 없는 테이블만 생성 — 기존 테이블에 컬럼 추가 시 수동 `ALTER TABLE` 필요 |
+| 영역                 | 선택                                               | 비고                                                                                                 |
+| -------------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| 백엔드               | Python 3 + FastAPI                                 | REST API 서버                                                                                        |
+| ORM                  | SQLAlchemy 2.0                                     | `app/models/`                                                                                        |
+| 검증                 | Pydantic v2 + pydantic-settings                    | `app/schemas/`, `.env` 설정                                                                          |
+| DB                   | MariaDB                                            | 로컬은 Docker Compose로 기동                                                                         |
+| DB 드라이버          | PyMySQL                                            |                                                                                                      |
+| 템플릿               | Jinja2 (서버 렌더링)                               | `app/templates/`                                                                                     |
+| 프론트엔드           | 프레임워크 없는 Vanilla JS + CSS                   | `app/static/js`, `app/static/css` — React/Vue 등 전혀 없음                                           |
+| 외부 라이브러리(CDN) | `html5-qrcode@2.3.8`, Pretendard/Inter 웹폰트      | 둘 다 빌드 없이 `<script>`/`<link>` 태그로 직접 로드                                                 |
+| TLS                  | `cryptography` 패키지로 자체 서명 인증서 직접 생성 | `scripts/generate_dev_cert.py`                                                                       |
+| 빌드/번들러          | 없음                                               | 프론트는 정적 파일을 그대로 서빙                                                                     |
+| 테스트/린트          | 없음                                               | 저장소에 구성되어 있지 않음 (`pytest`/`ruff` 등 가정 금지)                                           |
+| 마이그레이션         | 없음 (Alembic 미사용)                              | `Base.metadata.create_all`이 없는 테이블만 생성 — 기존 테이블에 컬럼 추가 시 수동 `ALTER TABLE` 필요 |
 
 의존성 전체 목록: [requirements.txt](../requirements.txt).
 
@@ -82,10 +76,10 @@ run_server.bat       # 로컬 서버 실행 단축 스크립트
 
 ## 문서 안내
 
-| 문서 | 용도 |
-|---|---|
-| [CLAUDE.md](../CLAUDE.md) | 프로젝트 전체 요약 + 명령어 + 설계 핵심 포인트 모음 (AI 코딩 도구용으로 작성됐지만 사람이 읽어도 동일하게 유용) |
-| [PLAN.md](PLAN.md) | 요구사항, 실행 방법, 남은 작업, 날짜별 히스토리 |
-| [SCHEMA_DESIGN.md](SCHEMA_DESIGN.md) | DB 테이블/컬럼/인덱스, 비즈니스 로직(현황 집계 등) 상세 |
-| [DEVELOPMENT_GUIDELINES.md](DEVELOPMENT_GUIDELINES.md) | 코딩 스타일, Git 컨벤션 |
-| 이 문서(HANDOVER.md) | 신규 투입자용 전체 그림 — 위 문서들로 가는 지도 역할 |
+| 문서                                                   | 용도                                                                                                            |
+| ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| [CLAUDE.md](../CLAUDE.md)                              | 프로젝트 전체 요약 + 명령어 + 설계 핵심 포인트 모음 (AI 코딩 도구용으로 작성됐지만 사람이 읽어도 동일하게 유용) |
+| [PLAN.md](PLAN.md)                                     | 요구사항, 실행 방법, 남은 작업, 날짜별 히스토리                                                                 |
+| [SCHEMA_DESIGN.md](SCHEMA_DESIGN.md)                   | DB 테이블/컬럼/인덱스, 비즈니스 로직(현황 집계 등) 상세                                                         |
+| [DEVELOPMENT_GUIDELINES.md](DEVELOPMENT_GUIDELINES.md) | 코딩 스타일, Git 컨벤션                                                                                         |
+| 이 문서(HANDOVER.md)                                   | 신규 투입자용 전체 그림 — 위 문서들로 가는 지도 역할                                                            |
