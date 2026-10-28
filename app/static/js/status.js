@@ -118,6 +118,17 @@ document.getElementById("search-input").addEventListener("input", debounce(loadS
 document.getElementById("filter-category").addEventListener("change", loadStatus);
 document.getElementById("filter-location").addEventListener("change", loadStatus);
 
+// 2026-10-28: 현재 검색/필터 조건을 그대로 쿼리스트링으로 넘겨 엑셀 다운로드.
+// Content-Disposition: attachment라 그냥 이동시키면 브라우저가 다운로드로 처리한다.
+document.getElementById("export-btn").addEventListener("click", () => {
+  const params = {
+    search: document.getElementById("search-input").value.trim(),
+    category_id: document.getElementById("filter-category").value,
+    location_id: document.getElementById("filter-location").value,
+  };
+  window.location.href = "/api/stocktakes/status/export" + buildQuery(params);
+});
+
 (async function init() {
   await initSelects();
   await loadStatus();

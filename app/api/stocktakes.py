@@ -1,6 +1,12 @@
+import io
 from datetime import date
+from urllib.parse import quote
 
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import StreamingResponse
+from openpyxl import Workbook
+from openpyxl.styles import Alignment, Font, PatternFill
+from openpyxl.utils import get_column_letter
 from sqlalchemy.orm import Session
 
 from app.crud import stocktake as crud
@@ -14,6 +20,75 @@ from app.schemas.stocktake import (
 )
 
 router = APIRouter(prefix="/api/stocktakes", tags=["stocktakes"])
+
+# 2026-10-28: 현황 엑셀 다운로드 컬럼 정의 — 바코드 추적 여부(센서 바코드
+# 조인 테이블 데이터)는 제외하고, 품목/현재고 정보만 내려준다.
+_STATUS_EXPORT_COLUMNS = [
+    ("품목명", 24),
+    ("품번", 14),
+    ("구분", 12),
+    ("단위", 10),
+    ("위치", 12),
+    ("규격약식", 20),
+    ("현재고", 10),
+    ("최근 조사수량(수동)", 18),
+    ("최근 조사일자", 14),
+]
+
+
+def _size_label(item) -> str:
+    """static/js/common.js::itemSizeLabel과 동일한 "규격약식(폭 x 길이 x 높이)" 포맷."""
+    abbr = item.size_abbr.name if item.size_abbr else ""
+    parts = [item.size_width, item.size_length, item.size_height]
+    has_detail = any(p is not None for p in parts)
+    detail = " x ".join(str(p) if p is not None else "-" for p in parts) if has_detail else ""
+    if abbr and detail:
+        return f"{abbr}({detail})"
+    return abbr or detail
+
+
+def _build_status_workbook(rows) -> io.BytesIO:
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "재고현황"
+
+    header_font = Font(color="FFFFFF", bold=True)
+    header_fill = PatternFill(fill_type="solid", start_color="354649", end_color="354649")
+    header_align = Alignment(horizontal="center", vertical="center")
+    for col, (label, width) in enumerate(_STATUS_EXPORT_COLUMNS, start=1):
+        cell = ws.cell(row=1, column=col, value=label)
+        cell.font = header_font
+        cell.fill = header_fill
+        cell.alignment = header_align
+        ws.column_dimensions[get_column_letter(col)].width = width
+    ws.row_dimensions[1].height = 22
+    ws.freeze_panes = "A2"
+
+    numeric_align = Alignment(horizontal="right")
+    for row_idx, (item, quantity, survey_date, _barcode_count, current_stock) in enumerate(rows, start=2):
+        values = [
+            item.item_name,
+            item.item_no or "",
+            item.category.name,
+            item.unit.name,
+            item.location.name if item.location else "",
+            _size_label(item),
+            current_stock,
+            quantity,
+            survey_date,
+        ]
+        for col, value in enumerate(values, start=1):
+            cell = ws.cell(row=row_idx, column=col, value=value)
+            if col in (7, 8):
+                cell.alignment = numeric_align
+            if col == 9 and value is not None:
+                cell.number_format = "yyyy-mm-dd"
+        ws.row_dimensions[row_idx].height = 18
+
+    buffer = io.BytesIO()
+    wb.save(buffer)
+    buffer.seek(0)
+    return buffer
 
 
 @router.get(
@@ -79,6 +154,36 @@ def status_view(
         )
         for item, quantity, survey_date, count, current_stock in rows
     ]
+
+
+@router.get(
+    "/status/export",
+    summary="현황 엑셀 다운로드",
+    description=(
+        "현황 화면과 동일한 필터(search/category_id/location_id)를 적용한 전체 "
+        "결과를 .xlsx 파일로 내려준다. 센서 바코드 집계(바코드 추적 여부)는 "
+        "별도 조인 테이블 데이터라 엑셀에는 포함하지 않는다."
+    ),
+)
+def export_status(
+    search: str | None = None,
+    category_id: int | None = None,
+    location_id: int | None = None,
+    db: Session = Depends(get_db),
+):
+    # 2026-10-28: 화면은 페이지네이션(limit)이 있지만 다운로드는 전체 결과가
+    # 필요하므로 매우 큰 limit으로 호출 (get_status 자체는 그대로 재사용).
+    rows = crud.get_status(
+        db, search=search, category_id=category_id, location_id=location_id,
+        limit=100000, offset=0,
+    )
+    buffer = _build_status_workbook(rows)
+    filename = f"재고현황_{date.today().isoformat()}.xlsx"
+    return StreamingResponse(
+        buffer,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": f"attachment; filename*=UTF-8''{quote(filename)}"},
+    )
 
 
 @router.get(
