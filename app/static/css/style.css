@@ -3,6 +3,7 @@
   --color-secondary: #6C7A89;
   --color-accent: #A3C6C4;
   --color-light: #E0E7E9;
+  /* 2026-10-28: 테이블 행/열 구분선을 또렷하게 보이도록 전용 테두리 색 추가 */
   --color-border: #C3CDD0;
 
   --space-1: 8px;
@@ -269,6 +270,7 @@ a {
 
 /* Table */
 
+/* 2026-10-28: 테이블 내부 세로 스크롤 추가, 현황 페이지는 더 큰 높이로 확장 */
 .table-scroll {
   overflow-x: auto;
   overflow-y: auto;
@@ -284,12 +286,14 @@ table.data-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
+  /* 2026-10-28: 행/열 구분선이 안 보인다는 피드백으로 바깥 테두리 추가 */
   border: 1px solid var(--color-border);
 }
 
 .data-table th,
 .data-table td {
   padding: var(--space-1) var(--space-2);
+  /* 2026-10-28: 가로/세로 구분선 추가 (아래는 열 구분용 border-right) */
   border-bottom: 1px solid var(--color-border);
   border-right: 1px solid var(--color-border);
   text-align: left;
@@ -300,6 +304,7 @@ table.data-table {
   border-right: none;
 }
 
+/* 2026-10-28: 헤더 고정(sticky)/가운데 정렬/배경색(팔레트 톤) 추가 */
 .data-table th {
   color: var(--color-dark);
   font-weight: 600;
