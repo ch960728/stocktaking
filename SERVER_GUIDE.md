@@ -29,7 +29,10 @@ netstat -ano | findstr 8010
 ```
 .venv/Scripts/python -m uvicorn app.main:app --host 0.0.0.0 --port 8010 --ssl-keyfile certs/dev-key.pem --ssl-certfile certs/dev-cert.pem
 ```
-
+`LISTENING`중 재실행:
+```
+Get-NetTCPConnection -LocalPort 8010 -State Listen | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }
+```
 ## 3. 인증서(SAN)에 접속 IP가 포함돼 있는지 확인
 
 PC의 LAN IP가 DHCP로 바뀌면 인증서가 안 맞아서 TLS 자체가 실패한다 (브라우저에서 "안전하지 않음"이 아니라 접속 자체가 안 됨).

@@ -1,11 +1,12 @@
-fastapi>=0.115
-uvicorn[standard]>=0.30
-sqlalchemy>=2.0
-pymysql>=1.1
-cryptography>=42.0
-pydantic>=2.7
-pydantic-settings>=2.3
-jinja2>=3.1
-python-multipart>=0.0.9
-python-dotenv>=1.0
-openpyxl>=3.1
+# 2026-10-29: 각 패키지 용도 주석 추가 (requirements.txt는 pip가 '#' 라인을 무시함)
+fastapi>=0.115            # 웹 프레임워크 (API + 페이지 라우팅)
+uvicorn[standard]>=0.30   # ASGI 서버 (HTTPS로 로컬 구동)
+sqlalchemy>=2.0           # ORM (모델/쿼리, create_all로 테이블 생성)
+pymysql>=1.1              # MariaDB 드라이버
+cryptography>=42.0        # pymysql 인증/TLS 관련 의존성
+pydantic>=2.7             # 요청/응답 스키마 검증
+pydantic-settings>=2.3    # .env 기반 설정 로딩
+jinja2>=3.1               # 서버사이드 HTML 템플릿 렌더링
+python-multipart>=0.0.9   # FastAPI 폼/멀티파트 요청 파싱
+python-dotenv>=1.0        # .env 파일 로딩
+openpyxl>=3.1             # 재고 현황 엑셀 다운로드(.xlsx) 생성

@@ -10,6 +10,8 @@ from app.models.sensor_barcode import SensorBarcode
 from app.models.stocktake import StocktakeRecord
 
 
+# 2026-10-29: crud 함수별 기능/내용 설명 주석 추가
+# 재고조사 기록 목록 조회 — search/구분/위치/날짜범위/is_active로 필터링, 최신순 정렬
 def get_stocktakes(
     db: Session,
     search: str | None = None,
@@ -46,6 +48,7 @@ def get_stocktakes(
     return list(db.scalars(query).unique())
 
 
+# 품목의 가장 최근(활성) 조사 수량 조회 — 재고 등록 폼의 수량 프리필에 사용
 def get_latest_quantity(db: Session, item_id: int) -> float | None:
     row = db.scalar(
         select(StocktakeRecord)
@@ -56,6 +59,7 @@ def get_latest_quantity(db: Session, item_id: int) -> float | None:
     return float(row.quantity) if row else None
 
 
+# 재고조사 기록 1건 조회 (id 기준, 품목 정보 eager load)
 def get_stocktake(db: Session, record_id: int) -> StocktakeRecord | None:
     return db.scalar(
         select(StocktakeRecord)
@@ -64,6 +68,7 @@ def get_stocktake(db: Session, record_id: int) -> StocktakeRecord | None:
     )
 
 
+# 재고조사 기록 등록 — 새로운 수량 스냅샷 생성
 def create_stocktake(db: Session, **fields) -> StocktakeRecord:
     row = StocktakeRecord(**fields)
     db.add(row)
@@ -72,6 +77,7 @@ def create_stocktake(db: Session, **fields) -> StocktakeRecord:
     return row
 
 
+# 재고조사 기록 부분 수정 (전달된 필드만 반영)
 def update_stocktake(db: Session, row: StocktakeRecord, **fields) -> StocktakeRecord:
     """`fields` should already be filtered to only the keys the client
     explicitly sent (e.g. via Pydantic's `exclude_unset`), so an explicit
@@ -83,6 +89,7 @@ def update_stocktake(db: Session, row: StocktakeRecord, **fields) -> StocktakeRe
     return row
 
 
+# 재고조사 기록 논리 삭제 (is_active=False)
 def deactivate_stocktake(db: Session, row: StocktakeRecord) -> StocktakeRecord:
     row.is_active = False
     db.commit()
@@ -90,6 +97,8 @@ def deactivate_stocktake(db: Session, row: StocktakeRecord) -> StocktakeRecord:
     return row
 
 
+# 현황 화면용 집계 조회 — 전용 테이블 없이 전체 활성 품목에 "최근 조사기록"과
+# "활성 센서 바코드 개수"를 LEFT JOIN으로 붙여서 current_stock(진짜 보유 수량)까지 계산해 반환
 def get_status(
     db: Session,
     search: str | None = None,
