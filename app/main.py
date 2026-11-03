@@ -75,9 +75,9 @@ app = FastAPI(
         },
     ],
     lifespan=lifespan,
-    docs_url=None,       # Swagger UI (/docs) 끔
-    redoc_url=None,      # ReDoc (/redoc) 끔
-    openapi_url=None,    # /openapi.json까지 끔 (이걸 끄면 위 둘도 못 씀)
+    #docs_url=None,       # Swagger UI (/docs) 끔
+    #redoc_url=None,      # ReDoc (/redoc) 끔
+    #openapi_url=None,    # /openapi.json까지 끔 (이걸 끄면 위 둘도 못 씀)
 )
 
 # 브라우저가 /static/... 주소로 요청하는 파일(CSS, JS, 이미지 등)을 서버가 꺼내 주는 폴더
